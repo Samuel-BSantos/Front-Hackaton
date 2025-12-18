@@ -1,38 +1,84 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, Image } from 'react-native';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  TouchableOpacity,
+  ScrollView,
+  Image
+} from 'react-native';
 
 export default function ChatAIScreen() {
   const [text, setText] = useState("");
+  const [messages, setMessages] = useState([
+    {
+      role: "assistant",
+      content: "Oi, tudo bem? 😊"
+    },
+    {
+      role: "assistant",
+      content: "Me diga o nome do aluno e eu ajudarei com as informações necessárias."
+    }
+  ]);
+
+  function sendMessage() {
+    if (!text.trim()) return;
+
+    const userMessage = {
+      role: "user",
+      content: text
+    };
+
+    setMessages(prev => [...prev, userMessage]);
+    setText("");
+
+    // MOCK DA IA (simula backend)
+    sendToAI(userMessage);
+  }
+
+  function sendToAI(userMessage) {
+    // 🔹 No futuro, você troca isso por um fetch/axios
+    // ex:
+    // fetch("SEU_BACKEND/chat", { ... })
+
+    setTimeout(() => {
+      const aiReply = {
+        role: "assistant",
+        content: `Entendi! Você digitou: "${userMessage.content}". Como posso ajudar mais?`
+      };
+
+      setMessages(prev => [...prev, aiReply]);
+    }, 800); // delay para parecer que a IA está pensando
+  }
 
   return (
     <View style={styles.container}>
       <View style={styles.chatBox}>
-        <ScrollView contentContainerStyle={styles.messages}>
-          {/* MENSAGEM IA */}
-          <View style={styles.aiRow}>
-            {/* IMAGEM PERFIL DA IA */}
-            <Image
-              source={{ uri: "https://i.imgur.com/1X4E5Yp.png" }}
-              style={styles.avatar}
-            />
-            <View style={styles.aiBubble}>
-              <Text style={styles.aiText}>
-                Oi, tudo bem? 😊
-              </Text>
-            </View>
-          </View>
 
-          <View style={styles.aiRow}>
-            <Image
-              source={{ uri: "https://i.imgur.com/1X4E5Yp.png" }}
-              style={styles.avatar}
-            />
-            <View style={styles.aiBubble}>
-              <Text style={styles.aiText}>
-                Me diga o nome do aluno e eu ajudarei com as informações necessárias.
-              </Text>
-            </View>
-          </View>
+        <ScrollView
+          contentContainerStyle={styles.messages}
+          showsVerticalScrollIndicator={false}
+        >
+          {messages.map((msg, index) => (
+            msg.role === "assistant" ? (
+              <View key={index} style={styles.aiRow}>
+                <Image
+                  source={{ uri: "https://i.imgur.com/1X4E5Yp.png" }}
+                  style={styles.avatar}
+                />
+                <View style={styles.aiBubble}>
+                  <Text style={styles.aiText}>{msg.content}</Text>
+                </View>
+              </View>
+            ) : (
+              <View key={index} style={styles.userRow}>
+                <View style={styles.userBubble}>
+                  <Text style={styles.userText}>{msg.content}</Text>
+                </View>
+              </View>
+            )
+          ))}
         </ScrollView>
 
         {/* INPUT */}
@@ -44,7 +90,7 @@ export default function ChatAIScreen() {
             style={styles.input}
           />
 
-          <TouchableOpacity style={styles.sendBtn}>
+          <TouchableOpacity style={styles.sendBtn} onPress={sendMessage}>
             <Text style={styles.sendText}>➤</Text>
           </TouchableOpacity>
         </View>
@@ -92,7 +138,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#0D47A1",
     padding: 12,
     borderRadius: 18,
-    maxWidth: "75"
+    maxWidth: "75%"
   },
 
   aiText: {

@@ -3,32 +3,30 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { Picker } from '@react-native-picker/picker';
 
 const alunos = [
-  { id: 1, curso: "ADS", serie: "4°", turma: "B", nome: "Adriana Monteiro", presenca: 99 },
-  { id: 2, curso: "TDS", serie: "1°", turma: "A", nome: "Bruno Siqueira", presenca: 79 },
-  { id: 3, curso: "TDS", serie: "1°", turma: "B", nome: "Carla Fernandes", presenca: 82 },
-  { id: 4, curso: "ADS", serie: "2°", turma: "B", nome: "Daniel Arantes", presenca: 55 },
-  { id: 5, curso: "ADS", serie: "3°", turma: "A", nome: "Eduardo Paiva", presenca: 90 },
-  { id: 6, curso: "ADS", serie: "1°", turma: "A", nome: "Fernanda Ribeiro", presenca: 96 },
-  { id: 7, curso: "TDS", serie: "2°", turma: "A", nome: "Gabriel Tavares", presenca: 100 },
-  { id: 8, curso: "ADS", serie: "1°", turma: "B", nome: "Helena Moura", presenca: 98 },
-  { id: 9, curso: "TDS", serie: "3°", turma: "B", nome: "Igor Almeida", presenca: 85 },
-  { id: 10, curso: "TDS", serie: "3°", turma: "B", nome: "Juliana Castro", presenca: 80 },
-  { id: 11, curso: "TDS", serie: "2°", turma: "A", nome: "Karen Duarte", presenca: 65 },
-  { id: 12, curso: "TDS", serie: "3°", turma: "B", nome: "Leonardo Pimentel", presenca: 70 },
-  { id: 13, curso: "TDS", serie: "3°", turma: "A", nome: "Mariana Silveira", presenca: 25 },
-  { id: 14, curso: "ADS", serie: "2°", turma: "A", nome: "Nicolas Figueiredo", presenca: 91 },
-  { id: 15, curso: "TDS", serie: "3°", turma: "B", nome: "Otávia Cardoso", presenca: 85 },
-  { id: 16, curso: "TDS", serie: "2°", turma: "B", nome: "Paulo Nascimento", presenca: 80 },
+  { id: 1, curso: "ADS", turma: "B", nome: "Adriana Monteiro", presenca: 99 },
+  { id: 2, curso: "TDS", turma: "A", nome: "Bruno Siqueira", presenca: 79 },
+  { id: 3, curso: "TDS", turma: "B", nome: "Carla Fernandes", presenca: 82 },
+  { id: 4, curso: "ADS", turma: "B", nome: "Daniel Arantes", presenca: 55 },
+  { id: 5, curso: "ADS", turma: "A", nome: "Eduardo Paiva", presenca: 90 },
+  { id: 6, curso: "ADS", turma: "A", nome: "Fernanda Ribeiro", presenca: 96 },
+  { id: 7, curso: "TDS", turma: "A", nome: "Gabriel Tavares", presenca: 100 },
+  { id: 8, curso: "ADS", turma: "B", nome: "Helena Moura", presenca: 98 },
+  { id: 9, curso: "TDS", turma: "B", nome: "Igor Almeida", presenca: 85 },
+  { id: 10, curso: "TDS", turma: "B", nome: "Juliana Castro", presenca: 80 },
+  { id: 11, curso: "TDS", turma: "A", nome: "Karen Duarte", presenca: 65 },
+  { id: 12, curso: "TDS", turma: "B", nome: "Leonardo Pimentel", presenca: 70 },
+  { id: 13, curso: "TDS", turma: "A", nome: "Mariana Silveira", presenca: 25 },
+  { id: 14, curso: "ADS", turma: "A", nome: "Nicolas Figueiredo", presenca: 91 },
+  { id: 15, curso: "TDS", turma: "B", nome: "Otávia Cardoso", presenca: 85 },
+  { id: 16, curso: "TDS", turma: "B", nome: "Paulo Nascimento", presenca: 80 },
 ];
 
 export default function HomeScreen({ navigation }) {
   const [curso, setCurso] = useState("");
-  const [serie, setSerie] = useState("");
   const [turma, setTurma] = useState("");
 
   const filtrados = alunos.filter(a =>
     (curso === "" || a.curso === curso) &&
-    (serie === "" || a.serie === serie) &&
     (turma === "" || a.turma === turma)
   );
 
@@ -57,19 +55,6 @@ export default function HomeScreen({ navigation }) {
         </View>
 
         <View style={styles.filtroBox}>
-          <Text style={styles.filtroLabel}>Série</Text>
-          <View style={styles.pickerBox}>
-            <Picker selectedValue={serie} onValueChange={setSerie}>
-              <Picker.Item label="" value="" />
-              <Picker.Item label="1°" value="1°" />
-              <Picker.Item label="2°" value="2°" />
-              <Picker.Item label="3°" value="3°" />
-              <Picker.Item label="4°" value="4°" />
-            </Picker>
-          </View>
-        </View>
-
-        <View style={styles.filtroBox}>
           <Text style={styles.filtroLabel}>Turma</Text>
           <View style={styles.pickerBox}>
             <Picker selectedValue={turma} onValueChange={setTurma}>
@@ -84,7 +69,6 @@ export default function HomeScreen({ navigation }) {
       {/* TABELA */}
       <View style={styles.tableHeader}>
         <Text style={[styles.cell, styles.header]}>Curso</Text>
-        <Text style={[styles.cell, styles.header]}>Série</Text>
         <Text style={[styles.cell, styles.header]}>Turma</Text>
         <Text style={[styles.cellLarge, styles.header]}>Nome</Text>
         <Text style={[styles.cellLarge, styles.header]}>Presença</Text>
@@ -95,7 +79,6 @@ export default function HomeScreen({ navigation }) {
         {filtrados.map(a => (
           <View key={a.id} style={styles.tableRow}>
             <Text style={styles.cell}>{a.curso}</Text>
-            <Text style={styles.cell}>{a.serie}</Text>
             <Text style={styles.cell}>{a.turma}</Text>
 
             <Text style={styles.cellLarge}>{a.nome}</Text>
