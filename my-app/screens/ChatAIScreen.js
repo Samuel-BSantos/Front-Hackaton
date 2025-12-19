@@ -120,7 +120,6 @@ const styles = StyleSheet.create({
     paddingBottom: 10
   },
 
-  /* IA */
   aiRow: {
     flexDirection: "row",
     alignItems: "flex-start",
@@ -146,7 +145,6 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
 
-  /* USUÁRIO */
   userRow: {
     alignItems: "flex-end",
     marginBottom: 15
@@ -164,7 +162,6 @@ const styles = StyleSheet.create({
     fontSize: 14
   },
 
-  /* INPUT */
   inputBox: {
     flexDirection: "row",
     alignItems: "center",

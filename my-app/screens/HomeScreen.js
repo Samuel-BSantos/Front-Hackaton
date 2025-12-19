@@ -184,20 +184,22 @@ const styles = StyleSheet.create({
   },
 
   actions: {
-    flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-    alignItems: "center"
-  },
+  minWidth: 90,
+  padding: 4,
+  justifyContent: "center",
+  alignItems: "center",
+  gap: 4
+},
 
-  btn: {
-    borderWidth: 1,
-    borderColor: "#777",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-    backgroundColor: "#EEE"
-  },
+btn: {
+  width: "100%",
+  borderWidth: 1,
+  borderColor: "#777",
+  paddingVertical: 6,
+  borderRadius: 4,
+  backgroundColor: "#EEE",
+  alignItems: "center"
+},
 
   btnText: { fontSize: 11 }
 });
