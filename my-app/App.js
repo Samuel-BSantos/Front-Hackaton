@@ -15,7 +15,7 @@ const Stack = createNativeStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerTitleAlign: 'center' }}>
+      <Stack.Navigator initialRouteName="Login" screenOptions={{ headerTitleAlign: 'center' }}>
 
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Cadastro" component={CadastroScreen} />
@@ -23,7 +23,7 @@ export default function App() {
         <Stack.Screen name="ListaFaltas" component={ListaFaltasScreen} />
         <Stack.Screen name="RegistrarFalta" component={RegistrarFaltaScreen} />
         <Stack.Screen name="EditarFalta" component={EditarFaltaScreen} />
-         <Stack.Screen name="ChatAI" component={ChatAIScreen} />
+        <Stack.Screen name="ChatAI" component={ChatAIScreen} />
 
       </Stack.Navigator>
     </NavigationContainer>

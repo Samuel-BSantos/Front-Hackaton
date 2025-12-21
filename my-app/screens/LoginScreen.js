@@ -1,12 +1,43 @@
 import React, { useState } from 'react';
+import api from './api';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
   const [login, setLogin] = useState('');
   const [senha, setSenha] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  function entrar() {
-    navigation.navigate("Home");
+  async function entrar() {
+    if (!login || !senha) {
+      Alert.alert("Erro", "Preencha todos os campos");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await api.post('/login', {
+        email: login,
+        senha: senha
+      });
+
+      console.log('Login success:', response.data);
+
+      Alert.alert("Sucesso", "Login realizado com sucesso!");
+      navigation.navigate("Home", response.data.professor);
+
+    } catch (error) {
+      console.error('Login error:', error);
+
+      if (error.response) {
+        Alert.alert("Erro", error.response.data.detail || "Credenciais inválidas");
+      } else if (error.request) {
+        Alert.alert("Erro de Conexão", "Não foi possível conectar ao servidor. Verifique:\n1. Se o backend está rodando\n2. Se o IP está correto\n3. Se há firewall bloqueando");
+      } else {
+        Alert.alert("Erro", "Ocorreu um erro inesperado");
+      }
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
@@ -14,19 +45,35 @@ export default function LoginScreen({ navigation }) {
       <View style={styles.box}>
         <Text style={styles.title}>Login</Text>
 
-        <Text style={styles.label}>Login</Text>
-        <TextInput style={styles.input} value={login} onChangeText={setLogin} />
-
-        <Text style={styles.label}>Senha</Text>
-        <TextInput 
-          style={styles.input} 
-          secureTextEntry 
-          value={senha} 
-          onChangeText={setSenha} 
+        <Text style={styles.label}>Email</Text>
+        <TextInput
+          style={styles.input}
+          value={login}
+          onChangeText={setLogin}
+          placeholder="seu@email.com"
+          autoCapitalize="none"
+          keyboardType="email-address"
         />
 
-        <TouchableOpacity style={styles.btn} onPress={entrar}>
-          <Text style={styles.btnText}>Entrar</Text>
+        <Text style={styles.label}>Senha</Text>
+        <TextInput
+          style={styles.input}
+          secureTextEntry
+          value={senha}
+          onChangeText={setSenha}
+          placeholder="Sua senha"
+        />
+
+        <TouchableOpacity
+          style={[styles.btn, loading && { opacity: 0.7 }]}
+          onPress={entrar}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="#fff" />
+          ) : (
+            <Text style={styles.btnText}>Entrar</Text>
+          )}
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate("Cadastro")}>
@@ -34,13 +81,12 @@ export default function LoginScreen({ navigation }) {
         </TouchableOpacity>
 
         <Text style={styles.info}>
-          Caso tenha perdido suas credenciais, contate o administrador.
+          Para testar sem backend, clique em "Cadastrar docente" primeiro
         </Text>
       </View>
     </View>
   );
 }
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

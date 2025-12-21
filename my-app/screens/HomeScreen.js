@@ -1,55 +1,59 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import api from './api';
 
-const alunos = [
-  { id: 1, curso: "ADS", turma: "B", nome: "Adriana Monteiro", presenca: 99 },
-  { id: 2, curso: "TDS", turma: "A", nome: "Bruno Siqueira", presenca: 79 },
-  { id: 3, curso: "TDS", turma: "B", nome: "Carla Fernandes", presenca: 82 },
-  { id: 4, curso: "ADS", turma: "B", nome: "Daniel Arantes", presenca: 55 },
-  { id: 5, curso: "ADS", turma: "A", nome: "Eduardo Paiva", presenca: 90 },
-  { id: 6, curso: "ADS", turma: "A", nome: "Fernanda Ribeiro", presenca: 96 },
-  { id: 7, curso: "TDS", turma: "A", nome: "Gabriel Tavares", presenca: 100 },
-  { id: 8, curso: "ADS", turma: "B", nome: "Helena Moura", presenca: 98 },
-  { id: 9, curso: "TDS", turma: "B", nome: "Igor Almeida", presenca: 85 },
-  { id: 10, curso: "TDS", turma: "B", nome: "Juliana Castro", presenca: 80 },
-  { id: 11, curso: "TDS", turma: "A", nome: "Karen Duarte", presenca: 65 },
-  { id: 12, curso: "TDS", turma: "B", nome: "Leonardo Pimentel", presenca: 70 },
-  { id: 13, curso: "TDS", turma: "A", nome: "Mariana Silveira", presenca: 25 },
-  { id: 14, curso: "ADS", turma: "A", nome: "Nicolas Figueiredo", presenca: 91 },
-  { id: 15, curso: "TDS", turma: "B", nome: "Otávia Cardoso", presenca: 85 },
-  { id: 16, curso: "TDS", turma: "B", nome: "Paulo Nascimento", presenca: 80 },
-];
 
-export default function HomeScreen({ navigation }) {
-  const [curso, setCurso] = useState("");
-  const [turma, setTurma] = useState("");
+export default function HomeScreen({ navigation, route }) {
+  const professor = route.params;
+  const [turmas, setTurmas] = useState([]);
 
-  const filtrados = alunos.filter(a =>
-    (curso === "" || a.curso === curso) &&
-    (turma === "" || a.turma === turma)
-  );
+
+  useEffect(() => {
+    async function carregarTurmas() {
+      try {
+        const response = await api.get(`/minhas-turmas/${professor.id}`);
+        setTurmas(response.data.turmas);
+      } catch (error) {
+        console.log("Erro ao carregar turmas", error);
+      }
+    }
+
+    carregarTurmas();
+  }, []);
+
+
+  async function carregarAlunos(idTurma) {
+    try {
+      const response = await api.get(
+        `/alunos-professor/${professor.id}/${idTurma}`
+      );
+      setAlunos(response.data.alunos);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
 
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Alunos</Text>
       <TouchableOpacity
-      style={styles.chatButton}
-      onPress={() => navigation.navigate("ChatAI")}
+        style={styles.chatButton}
+        onPress={() => navigation.navigate("ChatAI")}
       >
         <Text style={styles.chatButtonText}>Abrir Chat IA</Text>
       </TouchableOpacity>
 
-
-      {/* FILTROS */}
       <View style={styles.filtrosLinha}>
         <View style={styles.filtroBox}>
           <Text style={styles.filtroLabel}>Curso</Text>
           <View style={styles.pickerBox}>
-            <Picker selectedValue={curso} onValueChange={setCurso}>
+            <Picker selectedValue={curso} onValueChange={(value) => {
+              setTurma(value);
+              carregarAlunos(value);
+            }}>
               <Picker.Item label="" value="" />
-              <Picker.Item label="ADS" value="ADS" />
-              <Picker.Item label="TDS" value="TDS" />
             </Picker>
           </View>
         </View>
@@ -57,11 +61,14 @@ export default function HomeScreen({ navigation }) {
         <View style={styles.filtroBox}>
           <Text style={styles.filtroLabel}>Turma</Text>
           <View style={styles.pickerBox}>
-            <Picker selectedValue={turma} onValueChange={setTurma}>
-              <Picker.Item label="" value="" />
-              <Picker.Item label="A" value="A" />
-              <Picker.Item label="B" value="B" />
-            </Picker>
+            <Picker.Item label="" value="" />
+            {turmas.map(t => (
+              <Picker.Item
+                key={t.id_turma}
+                label={t.nome_turma}
+                value={t.id_turma}
+              />
+            ))}
           </View>
         </View>
       </View>
@@ -76,34 +83,33 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <ScrollView>
-        {filtrados.map(a => (
-          <View key={a.id} style={styles.tableRow}>
-            <Text style={styles.cell}>{a.curso}</Text>
-            <Text style={styles.cell}>{a.turma}</Text>
+        {alunos.map(a => (
+          <View key={a.id_aluno} style={styles.tableRow}>
+            <Text style={styles.cell}>---</Text>
+            <Text style={styles.cell}>{a.nome_turma}</Text>
 
             <Text style={styles.cellLarge}>{a.nome}</Text>
 
-            <Text style={styles.cellLarge}>{a.presenca}%</Text>
+            <Text style={styles.cellLarge}>{a.faltas}</Text>
 
             <View style={styles.actions}>
               <TouchableOpacity
                 style={styles.btn}
-                onPress={() => navigation.navigate("RegistrarFalta", { id: a.id })}
+                onPress={() =>
+                  navigation.navigate("RegistrarFalta", {
+                    idAluno: a.id_aluno,
+                    nomeAluno: a.nome
+                  })
+                }
               >
-                <Text style={styles.btnText}>Registrar</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.btn}
-                onPress={() => navigation.navigate("ListaFaltas", { id: a.id })}
-              >
-                <Text style={styles.btnText}>Editar</Text>
+                <Text style={styles.btnText}>Adicionar Falta</Text>
               </TouchableOpacity>
             </View>
           </View>
         ))}
+
       </ScrollView>
-    </View>
+    </View >
   );
 }
 
@@ -184,22 +190,22 @@ const styles = StyleSheet.create({
   },
 
   actions: {
-  minWidth: 90,
-  padding: 4,
-  justifyContent: "center",
-  alignItems: "center",
-  gap: 4
-},
+    minWidth: 90,
+    padding: 4,
+    justifyContent: "center",
+    alignItems: "center",
+    gap: 4
+  },
 
-btn: {
-  width: "100%",
-  borderWidth: 1,
-  borderColor: "#777",
-  paddingVertical: 6,
-  borderRadius: 4,
-  backgroundColor: "#EEE",
-  alignItems: "center"
-},
+  btn: {
+    width: "100%",
+    borderWidth: 1,
+    borderColor: "#777",
+    paddingVertical: 6,
+    borderRadius: 4,
+    backgroundColor: "#EEE",
+    alignItems: "center"
+  },
 
   btnText: { fontSize: 11 }
 });
