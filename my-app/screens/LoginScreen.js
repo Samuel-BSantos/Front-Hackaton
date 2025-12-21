@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import api from './api';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 
 export default function LoginScreen({ navigation }) {
   const [login, setLogin] = useState('');

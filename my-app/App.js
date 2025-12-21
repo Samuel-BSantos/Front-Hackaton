@@ -20,10 +20,11 @@ export default function App() {
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Cadastro" component={CadastroScreen} />
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="ListaFaltas" component={ListaFaltasScreen} />
+
         <Stack.Screen name="RegistrarFalta" component={RegistrarFaltaScreen} />
-        <Stack.Screen name="EditarFalta" component={EditarFaltaScreen} />
+        {/*<Stack.Screen name="EditarFalta" component={EditarFaltaScreen} />
         <Stack.Screen name="ChatAI" component={ChatAIScreen} />
+        *<Stack.Screen name="ListaFaltas" component={ListaFaltasScreen} />  */}
 
       </Stack.Navigator>
     </NavigationContainer>
